@@ -1,0 +1,51 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1 class="display-4 mb-4">Добро пожаловать на наш сайт!</h1>
+        <p class="lead">Это домашняя страница нашего Django проекта.</p>
+
+        <div class="mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">О нашем проекте</h5>
+                    <p class="card-text">
+                        Здесь вы найдете полезную информацию и сможете связаться с нами.
+                    </p>
+                    <a href="/contacts/" class="btn btn-primary">Перейти к контактам</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Преимущество 1</h5>
+                        <p class="card-text">Быстрая и надежная работа</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Преимущество 2</h5>
+                        <p class="card-text">Удобный интерфейс</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Преимущество 3</h5>
+                        <p class="card-text">Постоянная поддержка</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
