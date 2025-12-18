@@ -1,51 +1,44 @@
 {% extends 'catalog/base.html' %}
 
-{% block title %}Главная страница{% endblock %}
+{% block title %}Главная - Каталог товаров{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12 text-center">
-        <h1 class="display-4 mb-4">Добро пожаловать на наш сайт!</h1>
-        <p class="lead">Это домашняя страница нашего Django проекта.</p>
+    <div class="col-md-12">
+        <h1 class="mb-4">Добро пожаловать в каталог товаров!</h1>
+        <p class="lead">Здесь вы найдете лучшие товары по выгодным ценам.</p>
 
-        <div class="mt-5">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">О нашем проекте</h5>
-                    <p class="card-text">
-                        Здесь вы найдете полезную информацию и сможете связаться с нами.
-                    </p>
-                    <a href="/contacts/" class="btn btn-primary">Перейти к контактам</a>
+        {% if latest_products %}
+        <h2 class="mt-5">Последние товары</h2>
+        <div class="row">
+            {% for product in latest_products %}
+            <div class="col-md-4 mb-4">
+                <div class="card product-card h-100">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x200" class="card-img-top product-image" alt="Нет изображения">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                        <p class="price">{{ product.price }} руб.</p>
+                        <p class="text-muted">
+                            Категория: {{ product.category.name|default:"Без категории" }}
+                        </p>
+                        <p class="text-muted small">
+                            Добавлен: {{ product.created_at|date:"d.m.Y" }}
+                        </p>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-
-        <div class="row mt-5">
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Преимущество 1</h5>
-                        <p class="card-text">Быстрая и надежная работа</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Преимущество 2</h5>
-                        <p class="card-text">Удобный интерфейс</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Преимущество 3</h5>
-                        <p class="card-text">Постоянная поддержка</p>
-                    </div>
-                </div>
-            </div>
+        {% else %}
+        <div class="alert alert-info mt-4">
+            Товары еще не добавлены. Зайдите в админку для добавления товаров.
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

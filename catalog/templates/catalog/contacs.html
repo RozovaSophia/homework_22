@@ -1,54 +1,39 @@
 {% extends 'catalog/base.html' %}
 
-{% block title %}Контакты{% endblock %}
+{% block title %}Контакты - Каталог товаров{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12">
-        <h1 class="mb-4">Наши контакты</h1>
+    <div class="col-md-8">
+        <h1 class="mb-4">Контакты</h1>
+        <h3 class="text-primary">Наши контакты</h3>
+        <p class="lead mt-3">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua.
+        </p>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Контактная информация</h5>
-            </div>
+        <div class="card mt-4">
             <div class="card-body">
+                <h5 class="card-title">Контактная информация</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <strong>Адрес:</strong> г. Москва, ул. Примерная, д. 1
-                    </li>
-                    <li class="mb-2">
-                        <strong>Телефон:</strong> +7 (999) 123-45-67
-                    </li>
-                    <li class="mb-2">
-                        <strong>Email:</strong> info@example.com
-                    </li>
-                    <li class="mb-2">
-                        <strong>Режим работы:</strong> Пн-Пт: 9:00-18:00
-                    </li>
+                    <li><strong>Адрес:</strong> г. Москва, ул. Примерная, д. 123</li>
+                    <li><strong>Телефон:</strong> +7 (999) 123-45-67</li>
+                    <li><strong>Email:</strong> info@catalog.ru</li>
+                    <li><strong>Режим работы:</strong> Пн-Пт: 9:00-18:00</li>
                 </ul>
             </div>
         </div>
+    </div>
 
+    <div class="col-md-4">
         <div class="card">
-            <div class="card-header">
-                <h5>Связаться с нами</h5>
-            </div>
             <div class="card-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Ваше имя</label>
-                        <input type="text" class="form-control" id="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Сообщение</label>
-                        <textarea class="form-control" id="message" rows="4" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Отправить</button>
-                </form>
+                <h5 class="card-title">Быстрое меню</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{% url 'home' %}" class="text-decoration-none">🏠 Главная</a></li>
+                    <li class="mb-2"><a href="{% url 'contacts' %}" class="text-decoration-none fw-bold">📞 Контакты</a></li>
+                    <li class="mb-2"><a href="/admin/" class="text-decoration-none">⚙️ Админка</a></li>
+                </ul>
             </div>
         </div>
     </div>
