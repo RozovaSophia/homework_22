@@ -8,27 +8,44 @@
         <h1 class="mb-4">Добро пожаловать в каталог товаров!</h1>
         <p class="lead">Здесь вы найдете лучшие товары по выгодным ценам.</p>
 
-        {% if latest_products %}
-        <h2 class="mt-5">Последние товары</h2>
+        {% if products %}
+        <h2 class="mt-5">Наши товары</h2>
         <div class="row">
-            {% for product in latest_products %}
+            {% for product in products %}
             <div class="col-md-4 mb-4">
                 <div class="card product-card h-100">
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
-                    {% else %}
-                    <img src="https://via.placeholder.com/300x200" class="card-img-top product-image" alt="Нет изображения">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.description|truncatechars:100 }}</p>
-                        <p class="price">{{ product.price }} руб.</p>
-                        <p class="text-muted">
-                            Категория: {{ product.category.name|default:"Без категории" }}
-                        </p>
-                        <p class="text-muted small">
-                            Добавлен: {{ product.created_at|date:"d.m.Y" }}
-                        </p>
+                    <!-- ПЕРВАЯ ССЫЛКА: используем product.id вместо product.pk -->
+                    <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x200" class="card-img-top product-image" alt="Нет изображения">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                            <p class="price">{{ product.price }} руб.</p>
+                            <!-- ИСПРАВЛЕНО: безопасное получение category.name -->
+                            <p class="text-muted">
+                                Категория:
+                                {% if product.category and product.category.name %}
+                                    {{ product.category.name }}
+                                {% else %}
+                                    Без категории
+                                {% endif %}
+                            </p>
+                            <p class="text-muted small">
+                                {% if product.created_at %}
+                                    Добавлен: {{ product.created_at|date:"d.m.Y" }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </a>
+                    <!-- ВТОРАЯ ССЫЛКА: тоже используем product.id -->
+                    <div class="card-footer bg-white">
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary btn-sm">
+                            Подробнее
+                        </a>
                     </div>
                 </div>
             </div>

@@ -30,15 +30,15 @@ class Product(models.Model):
         blank=True,
         null=True
     )
-    # Изображение будет сохраняться в media/products/
+
     image = models.ImageField(
-        upload_to='products/%Y/%m/%d/',  # Организация по дате
+        upload_to='products/%Y/%m/%d/',
         verbose_name='Изображение',
         blank=True,
         null=True,
-        default='products/default.jpg'  # Изображение по умолчанию
+        default='products/default.jpg'
     )
-    # Связь с категорией (один ко многим)
+
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
@@ -52,7 +52,7 @@ class Product(models.Model):
         decimal_places=2,
         verbose_name='Цена'
     )
-    # Автоматически заполняемые поля
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата создания'
