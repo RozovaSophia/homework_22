@@ -1,38 +1,48 @@
-from django.shortcuts import render, get_object_or_404
+from django.views.generic import TemplateView, DetailView
+from django.views.generic.list import ListView
 from .models import Product
+from blog.models import BlogPost
 
 
-def home(request):
 
-    products = Product.objects.all()
+class HomeView(ListView):
+    model = Product
+    template_name = 'catalog/home.html'
+    context_object_name = 'products'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Главная страница'
 
-    for product in products:
-        print(f"{product.name} - {product.created_at}")
+        for product in context['products']:
+            print(f"{product.name} - {product.created_at}")
 
-    context = {
-        'title': 'Главная страница',
-        'products': products,
-    }
-    return render(request, 'catalog/home.html', context)
+        context['recent_posts'] = BlogPost.objects.filter(
+            is_published=True
+        ).order_by('-created_at')[:3]
 
+        print(f"Продуктов: {context['products'].count()}")
+        print(f"Постов: {context['recent_posts'].count()}")
 
-def contacts(request):
-    context = {
-        'title': 'Контакты',
-    }
-    return render(request, 'catalog/contacts.html', context)
-
-def product_detail(request, pk):
-    """
-    Контроллер для отображения подробной информации о товаре
-    Принимает pk (id товара) в URL.
-    """
-    product = get_object_or_404(Product, pk=pk)
-    context = {
-        'title': product.name,
-        'product': product,
-    }
-    return render(request, 'catalog/product_detail.html', context)
+        return context
 
 
+class ContactsView(TemplateView):
+    template_name = 'catalog/contacts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Контакты'
+        return context
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'  # вместо 'object'
+    pk_url_kwarg = 'pk'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        return context

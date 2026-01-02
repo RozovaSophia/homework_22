@@ -1,0 +1,24 @@
+[
+  {
+    "model": "blog.blogpost",
+    "pk": 1,
+    "fields": {
+      "title": "Первая запись в блоге",
+      "content": "Это наша первая тестовая запись...",
+      "created_at": "2024-01-15T10:00:00Z",
+      "is_published": true,
+      "views_count": 10
+    }
+  },
+  {
+    "model": "blog.blogpost",
+    "pk": 2,
+    "fields": {
+      "title": "Вторая запись",
+      "content": "Продолжаем наполнение блога...",
+      "created_at": "2024-01-16T12:00:00Z",
+      "is_published": true,
+      "views_count": 5
+    }
+  }
+]
