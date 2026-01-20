@@ -69,6 +69,8 @@ class ProductListView(ListView):
 
 class ProductCreateView(CreateView):
     """Создание продукта"""
+    login_url = '/users/login/'
+    redirect_field_name = 'next'
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'

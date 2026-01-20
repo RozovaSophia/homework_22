@@ -32,3 +32,33 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'catalog:home' %}">Каталог</a>
+
+        <div class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="Avatar"
+                         style="width: 30px; height: 30px; border-radius: 50%;">
+                    {% endif %}
+                    {{ user.email|truncatechars:20 }}
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'users:profile' %}">👤 Профиль</a></li>
+                    <li><a class="dropdown-item" href="{% url 'catalog:product_create' %}">➕ Добавить товар</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'users:logout' %}">🚪 Выйти</a></li>
+                </ul>
+            </div>
+            {% else %}
+            <a class="nav-link" href="{% url 'users:login' %}">Войти</a>
+            <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
