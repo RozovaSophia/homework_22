@@ -15,10 +15,11 @@ from .forms import UserRegisterForm, UserLoginForm, UserProfileForm
 
 class UserRegisterView(CreateView):
     """Регистрация пользователя"""
+
     model = User
     form_class = UserRegisterForm
-    template_name = 'users/register.html'
-    success_url = reverse_lazy('catalog:home')  # или 'users:profile'
+    template_name = "users/register.html"
+    success_url = reverse_lazy("catalog:home")  # или 'users:profile'
 
     def form_valid(self, form):
         """Дополнительная логика после успешной регистрации"""
@@ -30,20 +31,19 @@ class UserRegisterView(CreateView):
         self.send_welcome_email(user)
 
         messages.success(
-            self.request,
-            _('Registration successful! Welcome to our site!')
+            self.request, _("Registration successful! Welcome to our site!")
         )
 
         return response
 
     def send_welcome_email(self, user):
         """Отправка приветственного письма"""
-        subject = _('Welcome to our site!')
+        subject = _("Welcome to our site!")
         message = _(
-            f'Hello, {user.get_short_name()}!\n\n'
-            f'Thank you for registering on our site.\n'
-            f'Your email: {user.email}\n\n'
-            f'Best regards,\nSite Team'
+            f"Hello, {user.get_short_name()}!\n\n"
+            f"Thank you for registering on our site.\n"
+            f"Your email: {user.email}\n\n"
+            f"Best regards,\nSite Team"
         )
 
         try:
@@ -61,59 +61,57 @@ class UserRegisterView(CreateView):
 
 class UserLoginView(LoginView):
     """Вход пользователя"""
+
     form_class = UserLoginForm
-    template_name = 'users/login.html'
+    template_name = "users/login.html"
 
     def form_valid(self, form):
         """Дополнительная логика после успешного входа"""
         response = super().form_valid(form)
-        messages.success(
-            self.request,
-            _('You have successfully logged in!')
-        )
+        messages.success(self.request, _("You have successfully logged in!"))
         return response
 
     def form_invalid(self, form):
         """Обработка неверных данных"""
-        messages.error(
-            self.request,
-            _('Invalid email or password. Please try again.')
-        )
+        messages.error(self.request, _("Invalid email or password. Please try again."))
         return super().form_invalid(form)
 
 
 class UserLogoutView(LogoutView):
     """Выход пользователя"""
-    next_page = reverse_lazy('catalog:home')
+
+    next_page = reverse_lazy("catalog:home")
 
     def dispatch(self, request, *args, **kwargs):
-        messages.info(request, _('You have successfully logged out.'))
+        messages.info(request, _("You have successfully logged out."))
         return super().dispatch(request, *args, **kwargs)
 
 
 class UserProfileView(LoginRequiredMixin, UpdateView):
     """Профиль пользователя"""
+
     model = User
     form_class = UserProfileForm
-    template_name = 'users/profile.html'
+    template_name = "users/profile.html"
 
     def get_object(self, queryset=None):
         """Получаем текущего пользователя"""
         return self.request.user
 
     def get_success_url(self):
-        return reverse_lazy('users:profile')
+        return reverse_lazy("users:profile")
 
     def form_valid(self, form):
-        messages.success(self.request, _('Profile updated successfully!'))
+        messages.success(self.request, _("Profile updated successfully!"))
         return super().form_valid(form)
 
 
 class UserDashboardView(LoginRequiredMixin, TemplateView):
     """Личный кабинет пользователя"""
-    template_name = 'users/dashboard.html'
+
+    template_name = "users/dashboard.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
+        context["user"] = self.request.user
         return context

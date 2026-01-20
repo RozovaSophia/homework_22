@@ -9,42 +9,128 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='Наименование')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='Описание')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="Наименование")),
+                (
+                    "description",
+                    models.TextField(blank=True, null=True, verbose_name="Описание"),
+                ),
             ],
             options={
-                'verbose_name': 'Категория',
-                'verbose_name_plural': 'Категории',
+                "verbose_name": "Категория",
+                "verbose_name_plural": "Категории",
             },
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=100, verbose_name='Наименование')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='Описание')),
-                ('image', models.ImageField(blank=True, null=True, upload_to='products/%Y/%m/%d/', verbose_name='Изображение')),
-                ('price', models.DecimalField(db_index=True, decimal_places=2, max_digits=10, validators=[django.core.validators.MinValueValidator(0)], verbose_name='Цена')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Дата изменения')),
-                ('is_active', models.BooleanField(default=True, help_text='Отображается ли продукт на сайте', verbose_name='Активный')),
-                ('stock', models.PositiveIntegerField(default=0, verbose_name='Количество на складе')),
-                ('in_stock', models.BooleanField(default=False, editable=False, verbose_name='В наличии')),
-                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products', to='catalog.category', verbose_name='Категория')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        db_index=True, max_length=100, verbose_name="Наименование"
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, null=True, verbose_name="Описание"),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to="products/%Y/%m/%d/",
+                        verbose_name="Изображение",
+                    ),
+                ),
+                (
+                    "price",
+                    models.DecimalField(
+                        db_index=True,
+                        decimal_places=2,
+                        max_digits=10,
+                        validators=[django.core.validators.MinValueValidator(0)],
+                        verbose_name="Цена",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Дата создания"
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Дата изменения"),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Отображается ли продукт на сайте",
+                        verbose_name="Активный",
+                    ),
+                ),
+                (
+                    "stock",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="Количество на складе"
+                    ),
+                ),
+                (
+                    "in_stock",
+                    models.BooleanField(
+                        default=False, editable=False, verbose_name="В наличии"
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="products",
+                        to="catalog.category",
+                        verbose_name="Категория",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Продукт',
-                'verbose_name_plural': 'Продукты',
-                'ordering': ['-is_active', '-created_at'],
-                'indexes': [models.Index(fields=['category', 'is_active'], name='catalog_pro_categor_891fe8_idx'), models.Index(fields=['created_at'], name='catalog_pro_created_92b554_idx')],
+                "verbose_name": "Продукт",
+                "verbose_name_plural": "Продукты",
+                "ordering": ["-is_active", "-created_at"],
+                "indexes": [
+                    models.Index(
+                        fields=["category", "is_active"],
+                        name="catalog_pro_categor_891fe8_idx",
+                    ),
+                    models.Index(
+                        fields=["created_at"], name="catalog_pro_created_92b554_idx"
+                    ),
+                ],
             },
         ),
     ]
