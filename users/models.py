@@ -73,20 +73,20 @@ class User(AbstractUser):
         verbose_name=_("groups"),
         blank=True,
         help_text=_(
-            "The groups this user belongs to. A user will get all permissions "
+            "The groups this users belongs to. A users will get all permissions "
             "granted to each of their groups."
         ),
         related_name="custom_user_set",  # ← УНИКАЛЬНОЕ имя
-        related_query_name="user",
+        related_query_name="users",
     )
 
     user_permissions = models.ManyToManyField(
         "auth.Permission",
-        verbose_name=_("user permissions"),
+        verbose_name=_("users permissions"),
         blank=True,
-        help_text=_("Specific permissions for this user."),
+        help_text=_("Specific permissions for this users."),
         related_name="custom_user_permissions_set",  # ← УНИКАЛЬНОЕ имя
-        related_query_name="user",
+        related_query_name="users",
     )
 
     objects = CustomUserManager()
@@ -95,7 +95,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     class Meta:
-        verbose_name = _("user")
+        verbose_name = _("users")
         verbose_name_plural = _("users")
         ordering = ["-date_joined"]
 

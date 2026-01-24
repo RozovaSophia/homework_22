@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.conf import settings
 
 
 class BlogPost(models.Model):
@@ -13,6 +14,11 @@ class BlogPost(models.Model):
     views_count = models.PositiveIntegerField(
         default=0, verbose_name="Количество просмотров"
     )
+
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='blog_posts')
 
     def __str__(self):
         return self.title

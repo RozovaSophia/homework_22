@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.conf import settings
 
 
 class Category(models.Model):
@@ -54,6 +55,12 @@ class Product(models.Model):
 
     in_stock = models.BooleanField(
         default=False, verbose_name="В наличии", editable=False
+    )
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='products'
     )
 
     def clean(self):
