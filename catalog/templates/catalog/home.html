@@ -1,51 +1,122 @@
 {% extends 'catalog/base.html' %}
 
-{% block title %}Главная страница{% endblock %}
+{% block title %}Главная - Каталог товаров{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12 text-center">
-        <h1 class="display-4 mb-4">Добро пожаловать на наш сайт!</h1>
-        <p class="lead">Это домашняя страница нашего Django проекта.</p>
+    <div class="col-md-12">
+        <h1 class="mb-4">Добро пожаловать в каталог товаров!</h1>
+        <p class="lead">Здесь вы найдете лучшие товары по выгодным ценам.</p>
 
-        <div class="mt-5">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">О нашем проекте</h5>
-                    <p class="card-text">
-                        Здесь вы найдете полезную информацию и сможете связаться с нами.
-                    </p>
-                    <a href="/contacts/" class="btn btn-primary">Перейти к контактам</a>
+        {% if products %}
+        <h2 class="mt-5">Наши товары</h2>
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card product-card h-100">
+                    <!-- ПЕРВАЯ ССЫЛКА: используем product.id вместо product.pk -->
+                    <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x200" class="card-img-top product-image" alt="Нет изображения">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                            <p class="price">{{ product.price }} руб.</p>
+                            <!-- ИСПРАВЛЕНО: безопасное получение category.name -->
+                            <p class="text-muted">
+                                Категория:
+                                {% if product.category and product.category.name %}
+                                    {{ product.category.name }}
+                                {% else %}
+                                    Без категории
+                                {% endif %}
+                            </p>
+                            <p class="text-muted small">
+                                {% if product.created_at %}
+                                    Добавлен: {{ product.created_at|date:"d.m.Y" }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </a>
+                    <!-- ВТОРАЯ ССЫЛКА: тоже используем product.id -->
+                    <div class="card-footer bg-white">
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary btn-sm">
+                            Подробнее
+                        </a>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
+        {% else %}
+        <div class="alert alert-info mt-4">
+            Товары еще не добавлены. Зайдите в админку для добавления товаров.
+        </div>
+        {% endif %}
+    </div>
+</div>
 
-        <div class="row mt-5">
-            <div class="col-md-4">
-                <div class="card h-100">
+{% if recent_posts %}
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h2>Последние записи в блоге</h2>
+        <div class="row">
+            {% for post in recent_posts %}
+            <div class="col-md-4 mb-4">
+                <div class="card blog-card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Преимущество 1</h5>
-                        <p class="card-text">Быстрая и надежная работа</p>
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text">{{ post.content|truncatechars:150 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">
+                                {{ post.created_at|date:"d.m.Y" }}
+                            </span>
+                            <span class="badge bg-info">
+                                Просмотров: {{ post.views_count }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="{% url 'blog:post_detail' post.pk %}" class="btn btn-outline-primary btn-sm">
+                            Читать далее
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Преимущество 2</h5>
-                        <p class="card-text">Удобный интерфейс</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Преимущество 3</h5>
-                        <p class="card-text">Постоянная поддержка</p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-3">
+            <a href="{% url 'blog:post_list' %}" class="btn btn-primary">
+                Все записи блога
+            </a>
         </div>
     </div>
 </div>
+{% else %}
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h2>Блог</h2>
+        <div class="alert alert-info">
+            Пока нет записей в блоге.
+            {% if user.is_authenticated %}
+            <a href="{% url 'blog:post_create' %}" class="alert-link">Добавить первую запись</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.blog-card {
+    transition: transform 0.2s;
+    border: 1px solid #e0e0e0;
+}
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+</style>
 {% endblock %}
