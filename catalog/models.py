@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.conf import settings
 
+from users.models import User
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Наименование")
@@ -60,7 +62,10 @@ class Product(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='products'
+        null=True,
+        blank=True,
+        related_name='products',
+        verbose_name='Владелец'
     )
 
     def clean(self):
@@ -94,6 +99,8 @@ class Product(models.Model):
                         }
                     )
 
+    is_published = models.BooleanField(default=False, verbose_name='Опубликовано')
+
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
@@ -101,6 +108,9 @@ class Product(models.Model):
         indexes = [
             models.Index(fields=["category", "is_active"]),
             models.Index(fields=["created_at"]),
+        ]
+        permissions = [
+            ('can_unpublish_product', 'Может отменять публикацию продукта')
         ]
 
     def __str__(self):

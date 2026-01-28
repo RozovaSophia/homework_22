@@ -1,4 +1,6 @@
 from django.urls import path
+
+from blog import views
 from .views import *
 
 app_name = "catalog"
@@ -15,4 +17,5 @@ urlpatterns = [
     path(
         "product/<int:pk>/delete/", ProductDeleteView.as_view(), name="product_delete"
     ),
+    path('product/<int:pk>/unpublish/', views.unpublish_product, name='unpublish_product'),
 ]

@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required, permission_required
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
     ListView,
     DetailView,
@@ -70,14 +71,17 @@ class ProductCreateView(CreateView):
         context["forbidden_words"] = FORBIDDEN_WORDS
         return context
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = "catalog/product_form.html"
 
     def get_success_url(self):
-        # ИСПРАВЛЕНО: добавлен 'catalog:'
         return reverse_lazy("catalog:product_detail", kwargs={"pk": self.object.pk})
 
     def get_context_data(self, **kwargs):
@@ -86,8 +90,31 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         context["forbidden_words"] = FORBIDDEN_WORDS
         return context
 
+    def test_func(self):
+        product = self.get_object()
+        return self.request.user == product.owner
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:product_list")
+
+    def test_func(self):
+        product = self.get_object()
+        user = self.request.user
+        return user == product.owner or user.has_perm('catalog.delete_product')
+
+
+@login_required
+@permission_required('catalog.can_unpublish_product', raise_exception=True)
+def unpublish_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.method == 'POST':
+        product.is_published = False
+
+        product.save()
+        return redirect('catalog:product_detail', pk=pk)
+
+    return render(request, 'catalog/unpublish_confirm.html', {'product': product})

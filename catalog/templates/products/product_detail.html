@@ -5,6 +5,32 @@
     <title>Title</title>
 </head>
 <body>
+ {% if user.is_authenticated %}
+    <div class="product-actions">
+        {% comment %} Редактирование - только для владельца {% endcomment %}
+        {% if user == product.owner %}
+        <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-warning">
+            Редактировать
+        </a>
+        {% endif %}
 
+        {% comment %} Удаление - для владельца ИЛИ модератора {% endcomment %}
+        {% if user == product.owner or perms.catalog.delete_product %}
+        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">
+            Удалить
+        </a>
+        {% endif %}
+
+        {% comment %} Отмена публикации - только для модератора {% endcomment %}
+        {% if perms.catalog.can_unpublish_product and product.is_published %}
+        <form method="post" action="{% url 'catalog:unpublish_product' product.pk %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">
+                Снять с публикации
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    {% endif %}
 </body>
 </html>
