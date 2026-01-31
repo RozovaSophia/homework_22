@@ -5,6 +5,7 @@ Django settings for config project.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import redis
 
 load_dotenv()
 
@@ -106,7 +107,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",

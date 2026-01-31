@@ -62,3 +62,7 @@ class BlogPostDeleteView(LoginRequiredMixin, DeleteView):
 
 def unpublish_product():
     return None
+
+
+def products_by_category_view():
+    return None

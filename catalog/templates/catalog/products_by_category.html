@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .product-card img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+    <p>Найдено продуктов: {{ products_count }}</p>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% endif %}
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description|truncatewords:20 }}</p>
+            <p><strong>Цена:</strong> {{ product.price }} руб.</p>
+            <p><strong>Владелец:</strong> {{ product.owner.username }}</p>
+            <p><strong>Опубликовано:</strong>
+                {% if product.is_published %}Да{% else %}Нет{% endif %}
+            </p>
+            <a href="{% url 'catalog:product_detail' product.pk %}">Подробнее</a>
+        </div>
+        {% empty %}
+        <p>В этой категории пока нет продуктов.</p>
+        {% endfor %}
+    </div>
+
+    <p>Кеш Redis: {{ cache_info }}</p>
+</body>
+</html>

@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import (
     ListView,
     DetailView,
@@ -13,6 +15,8 @@ from django.views.generic import (
 from blog.models import BlogPost
 from .models import Product, Category
 from .forms import ProductForm
+from .services import get_products_by_category
+from django.core.cache import cache
 
 
 class HomeView(ListView):
@@ -55,6 +59,48 @@ class ProductListView(ListView):
     template_name = "catalog/product_list.html"
     context_object_name = "products"
     paginate_by = 12
+
+    def get_cache_key(self):
+        """Генерирует уникальный ключ кеша"""
+        page = self.request.GET.get('page', 1)
+        category = self.request.GET.get('category', 'all')
+        sort = self.request.GET.get('sort', 'default')
+
+        return f'product_list_page_{page}_cat_{category}_sort_{sort}'
+
+    def get_queryset(self):
+        cache_key = self.get_cache_key()
+
+        # Проверяем кеш
+        cached_data = cache.get(cache_key)
+        if cached_data is not None:
+            print(f"✅ Загружено из кеша: {cache_key}")
+            return cached_data
+
+        # Запрос к БД
+        queryset = Product.objects.filter(is_active=True)
+
+        # Применяем фильтры из запроса
+        category_id = self.request.GET.get('category')
+        if category_id and category_id != 'all':
+            queryset = queryset.filter(category_id=category_id)
+
+        # Применяем сортировку
+        sort_by = self.request.GET.get('sort')
+        if sort_by == 'price_asc':
+            queryset = queryset.order_by('price')
+        elif sort_by == 'price_desc':
+            queryset = queryset.order_by('-price')
+        elif sort_by == 'newest':
+            queryset = queryset.order_by('-created_at')
+        else:
+            queryset = queryset.order_by('name')
+
+        # Сохраняем в кеш на 5 минут
+        cache.set(cache_key, queryset, 300)
+        print(f"💾 Сохранено в кеш: {cache_key}")
+
+        return queryset
 
 
 class ProductCreateView(CreateView):
@@ -100,6 +146,15 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:product_list")
 
+    @method_decorator(cache_page(300))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.object.name
+        return context
+
     def test_func(self):
         product = self.get_object()
         user = self.request.user
@@ -118,3 +173,19 @@ def unpublish_product(request, pk):
         return redirect('catalog:product_detail', pk=pk)
 
     return render(request, 'catalog/unpublish_confirm.html', {'product': product})
+
+
+def products_by_category_view(request, category_id):
+    """Представление для отображения продуктов по категории"""
+    category = get_object_or_404(Category, id=category_id)
+
+    products = get_products_by_category(category_id)
+
+    context = {
+        'category': category,
+        'products': products,
+        'title': f'Продукты категории: {category.name}',
+        'products_count': len(products),
+    }
+
+    return render(request, 'catalog/products_by_category.html', context)
