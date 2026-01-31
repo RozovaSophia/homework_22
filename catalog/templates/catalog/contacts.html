@@ -1,0 +1,41 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Контакты - Каталог товаров{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-4">Контакты</h1>
+        <h3 class="text-primary">Наши контакты</h3>
+        <p class="lead mt-3">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua.
+        </p>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Контактная информация</h5>
+                <ul class="list-unstyled">
+                    <li><strong>Адрес:</strong> г. Москва, ул. Примерная, д. 123</li>
+                    <li><strong>Телефон:</strong> +7 (999) 123-45-67</li>
+                    <li><strong>Email:</strong> info@catalog.ru</li>
+                    <li><strong>Режим работы:</strong> Пн-Пт: 9:00-18:00</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Быстрое меню</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{% url 'catalog:home' %}" class="text-decoration-none">🏠 Главная</a></li>
+                    <li class="mb-2"><a href="{% url 'catalog:contacts' %}" class="text-decoration-none fw-bold">📞 Контакты</a></li>
+                    <li class="mb-2"><a href="/admin/" class="text-decoration-none">⚙️ Админка</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
